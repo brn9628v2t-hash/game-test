@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시라 제국 (v0.3.70)</title>
+<title>시라 제국 (v0.4.00)</title>
 <link id="favicon" rel="icon">
 
 <style>
@@ -78,6 +78,13 @@ button:disabled{opacity:.4;cursor:default}
 
 html,body,#app{background:#100e0b}#top{background:#1b1712}#bar{grid-template-columns:62px minmax(0,1fr) 30px;gap:4px 10px;border-bottom:1px solid #332b20;background:#1b1712;padding-bottom:9px}.hudportrait{grid-row:1/3;width:62px;height:62px}.hpw{grid-column:2;grid-row:1;max-width:none}#stats{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 5px;font-size:11px;text-align:left}#btnSet{grid-column:3;grid-row:1/3;align-self:center;color:#ad9a78}.gamehead{background:transparent}#sceneWrap{position:relative;border:0;background:#100e0b}#sceneWrap:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,#100e0b,transparent 12%,transparent 88%,#100e0b),linear-gradient(to bottom,#100e0b,transparent 12%,transparent 74%,#100e0b)}#cvScene{height:auto;width:100%;aspect-ratio:4/3}#log{padding-top:8px}.choice>span:nth-child(2){flex:1;min-width:0;overflow-wrap:anywhere}.choice .ct{display:flex;align-items:center;gap:4px;flex-shrink:0;padding-left:0}.choice .ct svg{flex-shrink:0}.entry i{color:#bda98a}@media(max-width:350px){#bar{grid-template-columns:54px minmax(0,1fr) 27px;gap:4px 6px}.hudportrait{width:54px;height:54px}#stats{font-size:10px}}
 #log #choices{padding:0 0 max(28px,env(safe-area-inset-bottom));gap:7px}.entry.old{opacity:1}
+#damageVignette{position:fixed;inset:0;pointer-events:none;z-index:9;opacity:0;background:radial-gradient(ellipse at center,transparent 46%,rgba(155,15,12,.13) 72%,rgba(180,22,15,.64) 100%);}
+#damageVignette.hit{animation:damageEdge .85s ease-out both}
+@keyframes damageEdge{0%{opacity:0}14%{opacity:1}100%{opacity:0}}
+@keyframes blastShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-4px)}30%{transform:translateX(4px)}45%{transform:translateX(-3px)}60%{transform:translateX(2px)}80%{transform:translateX(-1px)}}
+#sGame.blastShake{animation:blastShake .4s ease-out}
+html,body{overflow-x:clip}
+@media(prefers-reduced-motion:reduce){#sGame.blastShake{animation:none}}
 </style>
 </head>
 <body>
@@ -111,13 +118,14 @@ html,body,#app{background:#100e0b}#top{background:#1b1712}#bar{grid-template-col
   </div>
 </div>
 <div id="diceOverlay" role="status" aria-live="polite" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.25);align-items:center;justify-content:center;flex-direction:column;transition:opacity .15s;opacity:1"><canvas id="diceCanvas" width="600" height="510" style="width:min(300px,80vw);height:auto"></canvas><div id="diceResult" style="height:32px;font-size:23px;font-weight:bold;letter-spacing:4px;text-shadow:0 2px 5px #000"></div></div>
+<div id="damageVignette" aria-hidden="true"></div>
 <div id="modal" class="hidden"><div class="win" id="mBox"></div></div>
 
 <script>
 'use strict';
 /* ========== 버전 / 업데이트 내역 ========== */
-const VERSION='0.3.90';
-const UPDATES=[{v:"0.3.90",date:"2026-11-23",items:["옆 감방 죄수 대화 및 폭발 탈출 분기"]},{v:"0.3.80",date:"2026-11-23",items:["64×64 픽셀 주사위 그래픽"]},{v:"0.3.70",date:"2026-11-23",items:["감옥 첫 선택지 및 간수 대화 분기", "본문과 선택지 통합 스크롤"]},{v:"0.3.60",date:"2026-11-23",items:["흑요석 주사위 이미지 연출"]},{v:"0.3.50",date:"2026-11-23",items:["혈통·성별 초상화 6종", "감옥 분기 및 탈출", "흑갈색 금빛 D20"]},{v:"0.3.40",date:"2026-11-23",items:["자수정 D20 회전 연출", "결과 1초 유지 및 페이드"]},{v:"0.3.30",date:"2026-11-23",items:["출신별 구금 경위와 공통 도입부", "능력치 6종 HUD 및 숨은 행운", "D20 판정 아이콘", "삽화 가장자리 페이드"]},{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
+const VERSION='0.4.00';
+const UPDATES=[{v:"0.4.00",date:"2026-11-23",items:["폭발 화면 흔들림 및 피격 붉은 테두리 연출, 피해량 지문 제거"]},{v:"0.3.90",date:"2026-11-23",items:["옆 감방 죄수 대화 및 폭발 탈출 분기"]},{v:"0.3.80",date:"2026-11-23",items:["64×64 픽셀 주사위 그래픽"]},{v:"0.3.70",date:"2026-11-23",items:["감옥 첫 선택지 및 간수 대화 분기", "본문과 선택지 통합 스크롤"]},{v:"0.3.60",date:"2026-11-23",items:["흑요석 주사위 이미지 연출"]},{v:"0.3.50",date:"2026-11-23",items:["혈통·성별 초상화 6종", "감옥 분기 및 탈출", "흑갈색 금빛 D20"]},{v:"0.3.40",date:"2026-11-23",items:["자수정 D20 회전 연출", "결과 1초 유지 및 페이드"]},{v:"0.3.30",date:"2026-11-23",items:["출신별 구금 경위와 공통 도입부", "능력치 6종 HUD 및 숨은 행운", "D20 판정 아이콘", "삽화 가장자리 페이드"]},{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
  {v:'0.3.00',date:'2026-11-23',items:[
   '시작 화면: 촛불 대신 벽에 걸린 횃불의 희미한 불빛',
   '감옥 장면을 256×192로 새로 그림: 시야를 넓혀 쇠창살과 복도까지 보이고, 횃불 빛과 철창 그림자 표현',
@@ -239,13 +247,14 @@ function drawCell(t){const f=1+.09*Math.sin(t*11+2)+.05*Math.sin(t*29);
   if(S.flags.spark){const j=Math.round(Math.sin(t*8));P(124,172+j,8,8,'#3a7ac8');P(126,170+j,4,10,'#8ac8ff');P(127,171+j,2,4,'#e8f6ff');}
   const el=(performance.now()-S.wakeStart)/1000,op=Math.min(1,el/2.4),lid=Math.round((1-op)*96);
   if(lid>0){P(0,0,256,lid,'#000');P(0,192-lid,256,lid,'#000');scx.globalAlpha=.55*(1-op);P(0,0,256,192,'#000');scx.globalAlpha=1;}
-  if(S.shake>0){S.shake--;scx.globalAlpha=.25;P(0,0,256,192,'#ff2010');scx.globalAlpha=1;}}
+  }
 
 /* ========== 판정 ========== */
 function check(stat,dc,label){const r=rnd(1,20),v=C.st[stat],tot=r+v,ok=r===20||(r!==1&&tot>=dc);
   const res=r===20?'대성공!':r===1?'대실패!':ok?'성공':'실패';
   return {ok,r,res,line:`<div class="ck ${ok?'ok':'ng'}">[${label}] 주사위 <b>${r}</b> + ${stat==='luk'?'보정':stat.toUpperCase()} <b>${v}</b> = <b>${tot}</b> / 목표 ${dc} → ${res}</div>`};}
-function hurt(n){C.hp=Math.max(1,C.hp-n);S.shake=10;}
+function effect(id,cls){const el=$(id);el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
+function hurt(n){const before=C.hp;C.hp=Math.max(1,C.hp-n);if(C.hp<before){updateBar();effect('damageVignette','hit');}}
 
 /* ========== 감옥: 첫 선택지 ========== */
 const INTRO='뺨에 닿은 돌바닥이 차갑다. 축축한 공기에는 오래된 짚과 녹슨 쇠 냄새가 뒤섞여 있다. 희미한 횃불이 일렁이는 쇠창살 너머로 길게 뻗은 복도가 보인다.<br><br><i>내가 여기에 왜……?</i><br><br>지끈거리는 머리를 부여잡고 기억을 더듬어 본다.';
@@ -268,7 +277,7 @@ const ORIGIN_CH={
  merchant:{label:'숨겨 둔 금화로 간수와 거래를 시도한다.',stat:'cha',dc:12,ok:'간수는 금화를 바라보다가 슬그머니 주위를 살폈다.<br><br>“……얼마나 가지고 있지?”',ng:'“뇌물을 주겠다고? 죄목을 하나 더 늘리고 싶은 모양이군.”'},
  mage:{label:'마법 사고로 인해 벌어진 오해라고 설명한다.',stat:'cha',dc:12,ok:'“마법사 양반들이 사고를 치는 게 하루 이틀 일도 아니지. 네 스승이 누군데?”<br><br>간수가 조금 누그러진 태도로 물었다.',ng:'“마법사든 뭐든 내 알 바 아니다. 얌전히 있어.”'}
 };
-const INITIAL=[{id:'call',label:'간수를 부른다.',run:()=>{const r=rnd(1,3);if(r===1)return guard();if(r===2)return '몇 번이고 간수를 불러보았지만 돌아오는 대답은 없다. 자리를 비운 모양이다.';return go('prisoner','아무리 목청껏 불러 봐도 간수는커녕 개미 한 마리도 보이지 않았다. 그때 옆 감방에서 짜증이 잔뜩 섞인 목소리가 들려왔다.<br><br>“조용히 좀 해!”<br><br>누구냐고 묻자 옆 감방의 죄수는 코웃음을 쳤다.<br><br>“네가 알아서 뭐 하게? 처형될 마당에 친구라도 만들고 싶어졌나?”');}},{id:'look',label:'주변을 둘러본다.',stat:'wis',dc:15,ok:()=>{S.flags.looseStone=true;return go('wall','감방 안을 살피던 중 벽 한쪽에서 헐거워진 돌 하나를 발견했다. 손으로 눌러 보니 미세하게 움직인다.');},ng:()=>guard('감방 안을 구석구석 살펴보았지만 아무것도 발견하지 못했다. 하는 수 없이 벽에 등을 기대고 기다렸다.')},{id:'sleep',label:'한숨 잔다.',run:()=>{const before=C.hp;hurt(Math.floor(before/2));S.flags.prisonerDead=true;S.flags.escaped=true;return go('blast','<i>에라, 모르겠다.</i><br><br>벽에 등을 기대고 눈을 감았다. 얼마나 지났을까.<br><br><b>콰아앙!</b><br><br>귀를 찢는 듯한 폭음과 함께 감방 한쪽 벽이 터져 나갔다. 몸이 허공에 뜨는가 싶더니 이내 차가운 돌바닥에 처박혔다.<div class="ck ng">체력 −'+(before-C.hp)+' (현재 체력의 절반)</div><br>귓속에서 날카로운 이명이 울렸다. 가까스로 몸을 일으켜 무너진 벽 너머로 발걸음을 옮겼다.<br><br>옆 감방의 죄수로 보이는 남자가 무너진 돌무더기 사이에 쓰러져 있었다. 이미 숨이 끊어진 상태였다.<br><br>남자의 시신을 뒤로하고 걸음을 옮겼다.');}}];
+const INITIAL=[{id:'call',label:'간수를 부른다.',run:()=>{const r=rnd(1,3);if(r===1)return guard();if(r===2)return '몇 번이고 간수를 불러보았지만 돌아오는 대답은 없다. 자리를 비운 모양이다.';return go('prisoner','아무리 목청껏 불러 봐도 간수는커녕 개미 한 마리도 보이지 않았다. 그때 옆 감방에서 짜증이 잔뜩 섞인 목소리가 들려왔다.<br><br>“조용히 좀 해!”<br><br>누구냐고 묻자 옆 감방의 죄수는 코웃음을 쳤다.<br><br>“네가 알아서 뭐 하게? 처형될 마당에 친구라도 만들고 싶어졌나?”');}},{id:'look',label:'주변을 둘러본다.',stat:'wis',dc:15,ok:()=>{S.flags.looseStone=true;return go('wall','감방 안을 살피던 중 벽 한쪽에서 헐거워진 돌 하나를 발견했다. 손으로 눌러 보니 미세하게 움직인다.');},ng:()=>guard('감방 안을 구석구석 살펴보았지만 아무것도 발견하지 못했다. 하는 수 없이 벽에 등을 기대고 기다렸다.')},{id:'sleep',label:'한숨 잔다.',run:()=>{S.flags.prisonerDead=true;S.flags.escaped=true;return go('blast','<i>에라, 모르겠다.</i><br><br>벽에 등을 기대고 눈을 감았다. 얼마나 지났을까.<br><br><b>콰아앙!</b><br><br>귀를 찢는 듯한 폭음과 함께 감방 한쪽 벽이 터져 나갔다. 몸이 허공에 뜨는가 싶더니 이내 차가운 돌바닥에 처박혔다.<br><br>귓속에서 날카로운 이명이 울렸다. 가까스로 몸을 일으켜 무너진 벽 너머로 발걸음을 옮겼다.<br><br>옆 감방의 죄수로 보이는 남자가 무너진 돌무더기 사이에 쓰러져 있었다. 이미 숨이 끊어진 상태였다.<br><br>남자의 시신을 뒤로하고 걸음을 옮겼다.');}}];
 const GUARD_CHOICES=[{id:'release',label:'언제 이곳에서 나갈 수 있는지 정중하게 묻는다.',run:()=> '“제가 언제쯤 이곳에서 나갈 수 있을지 알 수 있을까요?”<br><br>“내가 알 게 뭐냐? 위에서 명령이 내려올 때까지 얌전히 기다려.”'},{id:'outside',label:'간수에게 밖의 상황을 묻는다.',run:()=>{const r=rnd(1,10);if(r<=3)return '“밖이 좀 소란스럽다. 그 이상은 나도 모른다.”';if(r<=8)return '“네가 알 바 아니다.”';return go('end','그때 복도 밖에서 다급한 외침이 들려왔다. 간수가 고개를 돌렸다.');}}];
 function choiceList(){let l=[];if(S.node==='start')l=INITIAL;else if(S.node==='guard')l=[...GUARD_CHOICES,{...ORIGIN_CH[C.origin],id:'origin',tag:ORIGINS[C.origin].name}];else if(S.node==='prisoner')l=[{id:'execution',label:'처형이라니, 무슨 소리인지 묻는다.',run:()=>{newScene('죄수와의 대화');return go('prisonerTalk','“처형이라니, 무슨 소리야?”');}}];else if(S.node==='blast')l=[{id:'escape',label:'밖으로 나간다.',run:()=>{newScene('감옥 외부');return go('escaped','무너진 감방을 뒤로하고 밖으로 나섰다.');}}];return l.filter(c=>!S.done[c.id]);}
 function newScene(title){$('log').querySelectorAll('.entry').forEach(e=>e.remove());$('sceneWrap').style.display='none';document.querySelector('.gamehead').textContent=title;window.scrollTo(0,0);}
@@ -286,7 +295,7 @@ const diceArt=["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaX
 const diceImgs=diceArt.map(src=>{const im=new Image();im.src=src;return im;});
 function drawDice(t,n,turns){const g=$('diceCanvas').getContext('2d');g.clearRect(0,0,600,510);const rem=Math.pow(1-t,1.65),bounce=t<.2?-100*(1-t/.2):-Math.abs(Math.sin((t-.2)*Math.PI*5))*45*(1-t),shift=-85*rem+Math.sin(t*9)*28*(1-t);const settled=t>=.94;const idx=settled?0:1+Math.floor((1-rem)*turns*10)%10;const im=diceImgs[idx];g.save();g.translate(300+shift,245+bounce);if(im.complete&&im.naturalWidth){g.imageSmoothingEnabled=false;const w=294,h=294;g.drawImage(im,-w/2,-h/2,w,h);}if(t===1){g.textAlign='center';g.textBaseline='middle';const digit=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];const str=String(n),px=8,x0=9-(str.length*4-1)*px/2,y0=-12-2.5*px;for(let j=0;j<str.length;j++)for(let k=0;k<15;k++)if(digit[Number(str[j])][k]==='1'){const x=x0+(j*4+k%3)*px,y=y0+Math.floor(k/3)*px;g.fillStyle='#201009';g.fillRect(x+2,y+2,px,px);g.fillStyle='#e9c58b';g.fillRect(x,y,px,px);}}g.restore();}
 function animateDice(k){return new Promise(resolve=>{const o=$('diceOverlay'),r=$('diceResult'),turns=rnd(3,5);o.style.opacity='1';o.style.display='flex';r.textContent='';drawDice(0,k.r,turns);let start=null;function frame(now){if(start===null)start=now;const t=Math.min(1,(now-start)/1050);drawDice(t,k.r,turns);if(t<1)requestAnimationFrame(frame);else{r.textContent=k.res;r.style.color=k.ok?'#b5dd96':'#ffa3a0';setTimeout(()=>{o.style.opacity='0';setTimeout(()=>{o.style.display='none';resolve();},150);},1000);}}requestAnimationFrame(frame);});}
-async function choose(c){if(diceBusy||S.done[c.id])return;diceBusy=true;$('choices').innerHTML='';try{let h=`<div class="pick">▶ ${c.tag?`[${c.tag}] `:''}${c.label}</div>`;S.done[c.id]=true;if(c.run)h+=c.run();else{const k=check(c.stat,c.dc,c.stat.toUpperCase()+' 판정');await animateDice(k);const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);if(c.id==='origin'){S.flags.originSuccess=k.ok;S.node='end';}}addEntry(h);if(c.id==='sleep'){$('sGame').animate([{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX(-5px)',filter:'brightness(1.8)'},{transform:'translateX(5px)',filter:'brightness(1)'},{transform:'translateX(0)'}],{duration:350});}renderChoices();updateBar();scrollDown();}finally{diceBusy=false;}}
+async function choose(c){if(diceBusy||S.done[c.id])return;diceBusy=true;$('choices').innerHTML='';try{let h=`<div class="pick">▶ ${c.tag?`[${c.tag}] `:''}${c.label}</div>`;S.done[c.id]=true;if(c.run)h+=c.run();else{const k=check(c.stat,c.dc,c.stat.toUpperCase()+' 판정');await animateDice(k);const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);if(c.id==='origin'){S.flags.originSuccess=k.ok;S.node='end';}}addEntry(h);if(c.id==='sleep'){effect('sGame','blastShake');hurt(Math.floor(C.hp/2));}renderChoices();updateBar();scrollDown();}finally{diceBusy=false;}}
 function renderChoices(){const box=$('choices');box.innerHTML='';
   choiceList().forEach((c,i)=>{const b=document.createElement('button');b.className='choice'+(c.tag?' sp':'');
     b.innerHTML=`<span class="n">${i+1}</span><span>${c.tag?`<span class="tg">[${c.tag}]</span> `:''}${c.label}</span>${c.stat&&c.stat!=='luk'?`<span class="ct">${c.stat.toUpperCase()} <svg viewBox="0 0 36 38" width="29" height="31" aria-label="목표 ${c.dc}"><path d="M18 2 L34 11 L34 27 L18 36 L2 27 L2 11 Z" fill="#272016" stroke="#bfa064"/><path d="M18 2 L8 26 L28 26 Z M2 11 L8 26 L18 36 L28 26 L34 11" fill="none" stroke="#88703e" stroke-width=".8"/><text x="18" y="23" text-anchor="middle" fill="#e8ce94" font-size="13" font-weight="bold">${c.dc}</text></svg></span>`:''}`;
