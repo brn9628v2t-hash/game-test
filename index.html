@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시라 제국 (v0.3.10)</title>
+<title>시라 제국 (v0.3.20)</title>
 <link id="favicon" rel="icon">
 
 <style>
@@ -73,6 +73,8 @@ button:disabled{opacity:.4;cursor:default}
 .hidden{display:none!important}
 
 #sChar{padding-top:max(20px,env(safe-area-inset-top));padding-bottom:30px}#bar{padding-top:max(7px,env(safe-area-inset-top));gap:7px}#choices{padding-bottom:max(28px,env(safe-area-inset-bottom))}.choice{min-height:46px}.portrait{image-rendering:pixelated;background:#201b19;border:2px solid #796042}.charportrait{width:128px;height:128px;margin:0 auto 12px;display:block}.hudportrait{width:44px;height:44px;flex-shrink:0}#stats{gap:2px 7px;grid-template-columns:repeat(4,auto);font-size:11px}.hpw{width:72px}#cvScene{width:100%;max-height:38dvh;object-fit:contain}#sTitle .ver{bottom:max(12px,env(safe-area-inset-bottom))}#sTitle .tap{opacity:.7}#sTitle.go .tap{animation:bl 1.6s ease 1s infinite}.gamehead{color:#b69b67;font-size:10px;letter-spacing:3px;text-align:center;padding:4px;background:#14110e}.charname{text-align:center;color:#e6cb91;font-size:20px;margin-bottom:10px}#log{line-height:1.85}.sg b{font-weight:bold}@media(max-width:350px){#stats{grid-template-columns:repeat(3,auto);gap:0 4px}.hpw{width:62px}.hudportrait{width:36px;height:36px}}@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;scroll-behavior:auto!important}}
+
+#sChar.on{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:18px 22px}.win{border:1px solid #77613e;border-radius:8px}#sChar .win{width:100%;max-width:350px;padding:18px}.charhead{display:flex;align-items:center;gap:14px;margin-bottom:14px}.charportrait{width:88px;height:88px;margin:0;flex-shrink:0}.charidentity{flex:1;min-width:0}.charname{text-align:left;margin:0;font-size:21px}#charMeta{font-size:12px;color:var(--dim);line-height:1.6}#sChar .sg{padding:10px 0;margin-top:8px;gap:3px 20px}#sChar .row{padding:5px 0}.sg b{color:var(--text)}.sg b.up,#stats b.up{color:var(--green)}#bar{display:grid;grid-template-columns:40px minmax(0,1fr) 34px;gap:4px 9px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));align-items:center}.hudportrait{grid-column:1;grid-row:1;width:40px;height:40px}.hpw{grid-column:2;grid-row:1;width:100%;max-width:180px}#btnSet{grid-column:3;grid-row:1;margin:0}#stats{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:4px 10px;font-size:10px;line-height:1.7}#stats b{color:var(--text)}#cvScene{width:100%;max-height:none;aspect-ratio:4/3;object-fit:contain}.gamehead{text-align:left;padding:6px 14px;letter-spacing:1px}#log{padding:14px 14px 4px}#choices .choice{border-width:1px;border-radius:5px;align-items:center}.choice.sp{border-color:#8c7043}.choice .ct{font-size:10px}.gold{border-radius:5px}
 </style>
 </head>
 <body>
@@ -85,12 +87,11 @@ button:disabled{opacity:.4;cursor:default}
   </div>
 
   <div id="sChar" class="scr">
-    <div class="sub">— 당신은 누구인가 —</div>
+    
     <div class="win">
-      <h3>상태창</h3>
-      <canvas id="charPortrait" class="portrait charportrait" width="64" height="64"></canvas><div id="charName" class="charname"></div><div id="charRows"></div>
+      <div class="charhead"><canvas id="charPortrait" class="portrait charportrait" width="64" height="64"></canvas><div class="charidentity"><div id="charName" class="charname"></div><div id="charMeta"></div></div></div><div id="charRows"></div>
       <div class="sg" id="charStats"></div>
-      <div class="note">기본 3 + 랜덤 <span id="bonusPts"></span>포인트 (초록색)</div>
+      
       <button class="gold" id="btnWake" style="width:100%;margin-top:14px;padding:10px">눈을 뜬다</button>
     </div>
   </div>
@@ -102,8 +103,7 @@ button:disabled{opacity:.4;cursor:default}
         <div id="stats"></div>
         <button id="btnSet" aria-label="설정">⚙</button>
       </div>
-      <div class="gamehead">시라 제국 · 이름 모를 감옥</div><div id="sceneWrap"><canvas id="cvScene" class="px" width="256" height="192"></canvas></div>
-    </div>
+      </div><div class="gamehead">시라 제국 · 이름 모를 감옥</div><div id="sceneWrap"><canvas id="cvScene" class="px" width="256" height="192"></canvas></div>
     <div id="log"></div>
     <div id="choices"></div>
   </div>
@@ -113,8 +113,8 @@ button:disabled{opacity:.4;cursor:default}
 <script>
 'use strict';
 /* ========== 버전 / 업데이트 내역 ========== */
-const VERSION='0.3.10';
-const UPDATES=[{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
+const VERSION='0.3.20';
+const UPDATES=[{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
  {v:'0.3.00',date:'2026-11-23',items:[
   '시작 화면: 촛불 대신 벽에 걸린 횃불의 희미한 불빛',
   '감옥 장면을 256×192로 새로 그림: 시야를 넓혀 쇠창살과 복도까지 보이고, 횃불 빛과 철창 그림자 표현',
@@ -148,7 +148,7 @@ function makeChar(){const st={};STATS.forEach(s=>st[s[0]]=3);const pts=rnd(3,4),
   const maxhp=40+10*Math.floor((st.vit-3)/3),origin=pick(Object.keys(ORIGINS));
   const gender=Math.random()<.5?'f':'m',blood=pick(Object.keys(BLOODS));
  const names={empire:{m:['알렌','루카스','에드릭','로웬'],f:['엘라','리네아','아델','미라']},north:{m:['비욘','에이릭','울프','스벤'],f:['프레야','시그리드','아스트리드','이르사']},west:{m:['카심','라힘','자이드','나딤'],f:['라일라','사라','나디아','아미라']}};
- const look={skin:pick({empire:['#d5a17e','#bb896a','#98664c'],north:['#e2b99b','#cb9d83'],west:['#b27b50','#94613e','#754b35']}[blood]),hair:pick({empire:['#39251d','#88502d','#c2a45e','#221e23'],north:['#d2b976','#c4c6c9','#a28858'],west:['#211d20','#392721']}[blood]),eye:pick(['#789da0','#776344','#899269','#51403a']),style:rnd(0,3),face:rnd(0,2),feature:Math.random()<.25?rnd(1,3):0};
+ const look={skin:pick({empire:['#d5a17e','#bb896a','#98664c'],north:['#e2b99b','#cb9d83'],west:['#b27b50','#94613e','#754b35']}[blood]),hair:pick({empire:['#39251d','#88502d','#c2a45e','#221e23'],north:['#d2b976','#c4c6c9','#a28858'],west:['#211d20','#392721']}[blood]),eye:pick(['#789da0','#776344','#899269','#51403a']),style:gender==='f'?rnd(1,2):rnd(0,3),face:rnd(0,2),feature:Math.random()<.25?rnd(1,3):0};
  return {name:pick(names[blood][gender]),gender,blood,origin,look,st,bonus,pts,hp:maxhp,maxhp,lv:1,items:[ORIGINS[origin].item]};}
 
 /* ========== 빛 계산 그림 엔진 ========== */
@@ -296,18 +296,18 @@ function portrait(id){const c=$(id).getContext('2d'),l=C.look;const P=(x,y,w,h,c
  P(15,25,5,10,sh);P(44,25,5,10,sh);poly([[21,12],[42,12],[46,19],[46,33],[43,41],[39,46],[25,46],[18+jaw,41],[18,33],[18,19]],sh);poly([[22,15],[40,15],[44,21],[43,34],[40,40],[36,44],[27,44],[21,38],[20,23]],skin);P(23,19,12,3,hi);P(22,32,3,3,hi);P(31,28,2,9,hi);P(33,35,4,2,sh);P(27,40,10,1,tint(skin,-55));P(29,41,6,1,hi);
  for(const x of [23,36]){P(x,24,7,2,hs);P(x,27,7,4,'#30272a');P(x+1,28,5,2,'#decfbb');P(x+3,27,2,4,l.eye);P(x+4,28,1,1,'#eee3d1');}
  if(l.style!==3){poly([[15,26],[15,13],[21,7],[39,6],[47,11],[50,20],[45,32],[42,20],[35,14],[28,19],[21,21],[19,30]],hair);poly([[18,15],[24,9],[38,8],[44,12],[29,12],[21,18]],hh);if(l.style===2){P(46,18,5,28,hair);P(47,28,2,14,hh);}if(l.style===1){P(15,24,4,22,hair);P(44,24,5,22,hair);}}else{P(22,12,20,3,hs);P(18,16,4,7,hs);P(42,16,4,7,hs);}
- if(l.feature===1){P(37,32,1,3,'#8b4e42');P(38,35,1,3,'#8b4e42');}if(l.feature===2){for(let i=0;i<7;i++)P(23+i*3,33+i%2,1,1,sh);}if(l.feature===3&&C.gender==='m'){poly([[22,36],[26,42],[32,44],[39,41],[43,36],[40,46],[32,49],[24,44]],hair);}else if(l.feature===3){P(46,34,2,4,'#d5b46c');}if(C.origin==='noble')P(40,54,3,3,'#d2af63');if(C.origin==='mage')P(31,57,3,4,'#779eae');}
+ if(C.gender==='f'){poly([[15,16],[11,25],[12,45],[19,53],[22,46],[18,30],[21,19]],hair);poly([[44,17],[50,23],[52,45],[46,53],[42,45],[46,29]],hair);P(16,27,2,16,hh);P(47,28,2,15,hh);for(const x of [23,36]){P(x,24,7,2,skin);P(x,26,7,1,hs);P(x,27,7,1,'#30272a');}P(28,40,8,1,tint(skin,-40));P(30,41,4,1,tint(skin,12));}if(l.feature===1){P(37,32,1,3,'#8b4e42');P(38,35,1,3,'#8b4e42');}if(l.feature===2){for(let i=0;i<7;i++)P(23+i*3,33+i%2,1,1,sh);}if(l.feature===3&&C.gender==='m'){poly([[22,36],[26,42],[32,44],[39,41],[43,36],[40,46],[32,49],[24,44]],hair);}else if(l.feature===3){P(46,34,2,4,'#d5b46c');}if(C.origin==='noble')P(40,54,3,3,'#d2af63');if(C.origin==='mage')P(31,57,3,4,'#779eae');}
 
 /* ========== 화면 ========== */
 function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0);}
 function statHTML(){return STATS.map(([k,n])=>`<div><span>${n}</span><b class="${C.bonus[k]?'up':''}">${C.st[k]}</b></div>`).join('');}
-function rowsHTML(){return [['성별',C.gender==='f'?'여성':'남성'],['혈통',BLOODS[C.blood]],['출신',ORIGINS[C.origin].name],['소지품',C.items.join(', ')||'없음'],['HP',`${C.hp} / ${C.maxhp}`]]
-  .map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');}
-function toChar(){C=makeChar();portrait('charPortrait');$('charName').textContent=C.name;$('charRows').innerHTML=rowsHTML();$('charStats').innerHTML=statHTML();$('bonusPts').textContent=C.pts;show('sChar');}
+function rowsHTML(compact=false){return [['성별',C.gender==='f'?'여성':'남성'],['혈통',BLOODS[C.blood]],['출신',ORIGINS[C.origin].name],['소지품',C.items.join(', ')||'없음'],['HP',`${C.hp} / ${C.maxhp}`]]
+  .filter((r,i)=>!compact||i>=3).map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');}
+function toChar(){C=makeChar();portrait('charPortrait');$('charName').textContent=C.name;$('charMeta').textContent=(C.gender==='f'?'여성':'남성')+' · '+BLOODS[C.blood]+' · '+ORIGINS[C.origin].name;$('charRows').innerHTML=rowsHTML(true);$('charStats').innerHTML=statHTML();show('sChar');}
 function toGame(){S={done:{},flags:{},wakeStart:performance.now(),shake:0};$('log').innerHTML='';addEntry(INTRO);portrait('hudPortrait');updateBar();renderChoices();show('sGame');}
 function toTitle(){closeModal();show('sTitle');const t=$('sTitle');t.classList.remove('go');void t.offsetWidth;t.classList.add('go');}
 function updateBar(){$('hpTxt').textContent=`HP ${C.hp}/${C.maxhp}`;$('hpFill').style.width=(C.hp/C.maxhp*100)+'%';
-  $('stats').innerHTML=STATS.map(([k,,a])=>`<span>${a}<b>${C.st[k]}</b></span>`).join('');}
+  $('stats').innerHTML=STATS.map(([k,,a])=>`<span>${k.toUpperCase()} <b class="${C.st[k]>3?'up':''}">${C.st[k]}</b></span>`).join('');}
 function openModal(h){$('mBox').innerHTML=h;$('modal').classList.remove('hidden');}
 function closeModal(){$('modal').classList.add('hidden');}
 function showStatus(){openModal(`<h3>상태창</h3>${rowsHTML()}<div class="sg">${statHTML()}</div><button style="width:100%;margin-top:14px" onclick="closeModal()">닫기</button>`);}
