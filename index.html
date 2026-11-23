@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시라 제국 (v0.3.20)</title>
+<title>시라 제국 (v0.3.30)</title>
 <link id="favicon" rel="icon">
 
 <style>
@@ -75,6 +75,8 @@ button:disabled{opacity:.4;cursor:default}
 #sChar{padding-top:max(20px,env(safe-area-inset-top));padding-bottom:30px}#bar{padding-top:max(7px,env(safe-area-inset-top));gap:7px}#choices{padding-bottom:max(28px,env(safe-area-inset-bottom))}.choice{min-height:46px}.portrait{image-rendering:pixelated;background:#201b19;border:2px solid #796042}.charportrait{width:128px;height:128px;margin:0 auto 12px;display:block}.hudportrait{width:44px;height:44px;flex-shrink:0}#stats{gap:2px 7px;grid-template-columns:repeat(4,auto);font-size:11px}.hpw{width:72px}#cvScene{width:100%;max-height:38dvh;object-fit:contain}#sTitle .ver{bottom:max(12px,env(safe-area-inset-bottom))}#sTitle .tap{opacity:.7}#sTitle.go .tap{animation:bl 1.6s ease 1s infinite}.gamehead{color:#b69b67;font-size:10px;letter-spacing:3px;text-align:center;padding:4px;background:#14110e}.charname{text-align:center;color:#e6cb91;font-size:20px;margin-bottom:10px}#log{line-height:1.85}.sg b{font-weight:bold}@media(max-width:350px){#stats{grid-template-columns:repeat(3,auto);gap:0 4px}.hpw{width:62px}.hudportrait{width:36px;height:36px}}@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;scroll-behavior:auto!important}}
 
 #sChar.on{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:18px 22px}.win{border:1px solid #77613e;border-radius:8px}#sChar .win{width:100%;max-width:350px;padding:18px}.charhead{display:flex;align-items:center;gap:14px;margin-bottom:14px}.charportrait{width:88px;height:88px;margin:0;flex-shrink:0}.charidentity{flex:1;min-width:0}.charname{text-align:left;margin:0;font-size:21px}#charMeta{font-size:12px;color:var(--dim);line-height:1.6}#sChar .sg{padding:10px 0;margin-top:8px;gap:3px 20px}#sChar .row{padding:5px 0}.sg b{color:var(--text)}.sg b.up,#stats b.up{color:var(--green)}#bar{display:grid;grid-template-columns:40px minmax(0,1fr) 34px;gap:4px 9px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));align-items:center}.hudportrait{grid-column:1;grid-row:1;width:40px;height:40px}.hpw{grid-column:2;grid-row:1;width:100%;max-width:180px}#btnSet{grid-column:3;grid-row:1;margin:0}#stats{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:4px 10px;font-size:10px;line-height:1.7}#stats b{color:var(--text)}#cvScene{width:100%;max-height:none;aspect-ratio:4/3;object-fit:contain}.gamehead{text-align:left;padding:6px 14px;letter-spacing:1px}#log{padding:14px 14px 4px}#choices .choice{border-width:1px;border-radius:5px;align-items:center}.choice.sp{border-color:#8c7043}.choice .ct{font-size:10px}.gold{border-radius:5px}
+
+html,body,#app{background:#100e0b}#top{background:#1b1712}#bar{grid-template-columns:62px minmax(0,1fr) 30px;gap:4px 10px;border-bottom:1px solid #332b20;background:#1b1712;padding-bottom:9px}.hudportrait{grid-row:1/3;width:62px;height:62px}.hpw{grid-column:2;grid-row:1;max-width:none}#stats{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 5px;font-size:11px;text-align:left}#btnSet{grid-column:3;grid-row:1/3;align-self:center;color:#ad9a78}.gamehead{background:transparent}#sceneWrap{position:relative;border:0;background:#100e0b}#sceneWrap:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,#100e0b,transparent 12%,transparent 88%,#100e0b),linear-gradient(to bottom,#100e0b,transparent 12%,transparent 74%,#100e0b)}#cvScene{height:auto;width:100%;aspect-ratio:4/3}#log{padding-top:8px}.choice>span:nth-child(2){flex:1;min-width:0;overflow-wrap:anywhere}.choice .ct{display:flex;align-items:center;gap:4px;flex-shrink:0;padding-left:0}.choice .ct svg{flex-shrink:0}.entry i{color:#bda98a}@media(max-width:350px){#bar{grid-template-columns:54px minmax(0,1fr) 27px;gap:4px 6px}.hudportrait{width:54px;height:54px}#stats{font-size:10px}}
 </style>
 </head>
 <body>
@@ -101,7 +103,7 @@ button:disabled{opacity:.4;cursor:default}
       <div id="bar"><canvas id="hudPortrait" class="portrait hudportrait" width="64" height="64" aria-label="캐릭터 상태"></canvas>
         <div class="hpw" id="hpBox"><div class="t" id="hpTxt"></div><div class="hpb"><i id="hpFill"></i></div></div>
         <div id="stats"></div>
-        <button id="btnSet" aria-label="설정">⚙</button>
+        <button id="btnSet" aria-label="설정"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6l1 3 3 1 2 4-2 3v3l-4 3-3-1-3 1-4-3v-3l-2-3 2-4 3-1z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
       </div><div class="gamehead">시라 제국 · 이름 모를 감옥</div><div id="sceneWrap"><canvas id="cvScene" class="px" width="256" height="192"></canvas></div>
     <div id="log"></div>
@@ -113,8 +115,8 @@ button:disabled{opacity:.4;cursor:default}
 <script>
 'use strict';
 /* ========== 버전 / 업데이트 내역 ========== */
-const VERSION='0.3.20';
-const UPDATES=[{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
+const VERSION='0.3.30';
+const UPDATES=[{v:"0.3.30",date:"2026-11-23",items:["출신별 구금 경위와 공통 도입부", "능력치 6종 HUD 및 숨은 행운", "D20 판정 아이콘", "삽화 가장자리 페이드"]},{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
  {v:'0.3.00',date:'2026-11-23',items:[
   '시작 화면: 촛불 대신 벽에 걸린 횃불의 희미한 불빛',
   '감옥 장면을 256×192로 새로 그림: 시야를 넓혀 쇠창살과 복도까지 보이고, 횃불 빛과 철창 그림자 표현',
@@ -131,7 +133,7 @@ const UPDATES=[{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[rnd(0,a.length-1)];
-const STATS=[['str','근력','근'],['agi','민첩','민'],['vit','건강','건'],['int','지능','지'],['wis','지혜','혜'],['cha','매력','매'],['luk','행운','운']];
+const STATS=[['str','근력','근'],['agi','민첩','민'],['vit','건강','건'],['int','지능','지'],['wis','지혜','혜'],['cha','매력','매']];
 const SNAME=Object.fromEntries(STATS.map(s=>[s[0],s[1]]));
 const BLOODS={empire:'제국민',north:'북방 유목민',west:'서부 이민족'};
 const ORIGINS={
@@ -143,7 +145,7 @@ const ORIGINS={
  mage:{name:'마법사의 제자',item:'마법 촉매 조각'}
 };
 let C=null,S=null;
-function makeChar(){const st={};STATS.forEach(s=>st[s[0]]=3);const pts=rnd(3,4),bonus={};
+function makeChar(){const st={luk:3};STATS.forEach(s=>st[s[0]]=3);const pts=rnd(3,4),bonus={};
   for(let i=0;i<pts;i++){const k=pick(STATS)[0];st[k]++;bonus[k]=1;}
   const maxhp=40+10*Math.floor((st.vit-3)/3),origin=pick(Object.keys(ORIGINS));
   const gender=Math.random()<.5?'f':'m',blood=pick(Object.keys(BLOODS));
@@ -241,11 +243,19 @@ function drawCell(t){const f=1+.09*Math.sin(t*11+2)+.05*Math.sin(t*29);
 /* ========== 판정 ========== */
 function check(stat,dc,label){const r=rnd(1,20),v=C.st[stat],tot=r+v,ok=r===20||(r!==1&&tot>=dc);
   const res=r===20?'대성공!':r===1?'대실패!':ok?'성공':'실패';
-  return {ok,line:`<div class="ck ${ok?'ok':'ng'}">[${label}] 주사위 <b>${r}</b> + ${SNAME[stat]} <b>${v}</b> = <b>${tot}</b> / 목표 ${dc} → ${res}</div>`};}
+  return {ok,line:`<div class="ck ${ok?'ok':'ng'}">[${label}] 주사위 <b>${r}</b> + ${stat==='luk'?'보정':stat.toUpperCase()} <b>${v}</b> = <b>${tot}</b> / 목표 ${dc} → ${res}</div>`};}
 function hurt(n){C.hp=Math.max(1,C.hp-n);S.shake=10;}
 
 /* ========== 감옥: 첫 선택지 ========== */
-const INTRO='…차갑다. 뺨에 닿은 돌바닥이 축축하다.<br>눈을 뜨자 녹슨 쇠창살 너머로 희미한 횃불 빛이 일렁인다.<br><br>어째서 이곳에 있는지 기억나지 않는다. 손목에 남은 쇠고랑 자국만 욱신거릴 뿐.';
+const INTRO='뺨에 닿은 돌바닥이 차갑다. 축축한 공기에는 오래된 짚과 녹슨 쇠 냄새가 뒤섞여 있다. 희미한 횃불이 일렁이는 쇠창살 너머로 길게 뻗은 복도가 보인다.<br><br><i>내가 여기에 왜……?</i><br><br>지끈거리는 머리를 부여잡고 기억을 더듬어 본다.<br><br><i>아, 그랬었지…….</i>';
+const MEMORIES={
+ noble:'다른 귀족 가문의 자제와 시비가 붙었다. 처음에는 가벼운 언쟁이었지만, 가문에 대한 모욕이 오가면서 결국 몸싸움으로 번졌다. 한창 뒤엉켜 싸우던 중 누군가에게 뒤통수를 얻어맞은 것까지는 기억난다.',
+ squire:'주인인 기사와 함께 어느 마을에 머물렀다. 여느 때처럼 말에게 먹이를 주고 장비를 손질하던 중, 무장한 병사들이 들이닥쳤다. 무슨 일인지 물어볼 틈도 없이 붙잡혔다.',
+ troupe:'광장에서 공연을 하던 중이었다. 지방 영주를 풍자한 익살스러운 연극에 관객들은 박장대소했지만, 그중에는 웃지 않는 이들도 있었다. 공연이 끝나기도 전에 경비병들이 무대 위로 올라왔다.',
+ thief:'동료들과 함께 늦은 밤 어느 상인의 저택에 숨어들었다. 제법 짭짤한 일이 될 터였다. 하지만 약속된 신호는 들려오지 않았고, 어둠 속에서 모습을 드러낸 것은 동료들이 아닌 무장한 경비병들이었다.',
+ merchant:'시장 한복판에서 손님과 물건값을 두고 실랑이가 벌어졌다. 거래를 지켜보던 누군가가 저울에 문제가 있다고 소리쳤고, 순식간에 사람들이 몰려들었다. 얼마 지나지 않아 경비병들이 찾아왔다.',
+ mage:'스승이 자리를 비운 사이 작업실에서 마법 실험을 하고 있었다. 계산에 착오가 있었던 것인지, 촉매에 문제가 있었던 것인지 알 수 없다. 굉음과 함께 창문이 산산이 부서졌다. 마지막으로 기억나는 것은 달려오는 경비병들의 모습이다.'
+};
 const COMMON=[
  {id:'stand',label:'몸을 일으킨다',stat:'vit',dc:9,
   ok:'벽을 짚고 천천히 일어섰다. 감방은 네 걸음 남짓. 앞은 녹슨 쇠창살, 그 너머로 횃불이 걸린 복도가 이어진다.',
@@ -263,24 +273,22 @@ const BLOOD_CH={
   ok:()=>{S.flags.looseStone=true;return '서부 부족의 화살표 문양이 바닥을 가리킨다. 그 아래 <b>돌 하나가 헐겁다.</b> 동족이 남긴 흔적이다.';},ng:'그냥 긁힌 자국이었나 보다.'}
 };
 const ORIGIN_CH={
- noble:{label:'반지의 문장을 살핀다',stat:'int',dc:12,ok:'반지 안쪽에 은빛 독수리가 새겨져 있다. <b>북부 대공가의 문장</b>이다. 하지만 당신의 이름은 어디에도 없다.',ng:'어두워서 문장을 알아볼 수 없다.'},
- squire:{label:'품속의 서약서를 펼친다',stat:'wis',dc:11,ok:'"기사 ○○의 종자로서 끝까지 섬길 것을 맹세한다." <b>주인의 이름만 칼로 긁혀 지워져 있다.</b>',ng:'잉크가 번져 읽을 수 없다.'},
- troupe:{label:'머리핀을 더듬어 찾는다',stat:'agi',dc:12,ok:'머리카락 속 깊이 숨긴 머리핀이 손끝에 걸렸다. 극단에서 배운 재주라면 <b>저 자물쇠쯤은…</b>',
-  ng:()=>{C.items=C.items.filter(i=>i!=='머리핀');return '손이 떨려 머리핀을 떨어뜨렸다. 어둠 속 어딘가로 굴러갔다.';}},
+ noble:{label:'간수를 불러 가문의 이름을 댄다',stat:'cha',dc:12,ok:'간수가 반지의 문장을 확인하고 잠시 망설인다. 상관에게 보고하겠다고 말한다.',ng:'간수는 비웃으며 조용히 하라고 소리친다.'},
+ squire:{label:'간수에게 기사의 행방을 묻는다',stat:'cha',dc:11,ok:'간수는 기사가 다른 곳으로 끌려갔다고 귀띔한다.',ng:'간수는 대답하지 않는다.'},
+ troupe:{label:'아픈 척하며 간수의 관심을 끈다',stat:'cha',dc:12,ok:'간수가 소리를 듣고 창살 가까이 다가온다.',ng:'간수는 익숙한 수법이라며 외면한다.'},
  thief:{label:'벽을 두드려 패거리 신호를 보낸다',stat:'wis',dc:12,ok:'똑, 똑-똑. 잠시 뒤 옆 감방에서 <b>같은 신호가 돌아왔다.</b> 패거리를 아는 누군가가 있다.',ng:'벽은 조용하다. 대신 간수의 욕설이 들려왔다.'},
- merchant:{label:'옷자락의 금화를 확인한다',stat:'luk',dc:10,ok:'꿰매 둔 금화 세 닢이 그대로 있다. 몸수색을 한 놈이 일을 대충 했나 보다.',
-  ng:()=>{C.items=C.items.map(i=>i.startsWith('꿰매')?'꿰매 숨긴 금화 1닢':i);return '솔기가 뜯겨 있다. 금화는 <b>한 닢</b>만 남았다.';}},
+ merchant:{label:'숨겨 둔 금화로 간수를 매수하려 한다',stat:'cha',dc:12,ok:'간수는 금화를 보고 주위를 살핀다. 잠시 기다리라고 속삭인다.',ng:'간수는 뇌물 따위에 넘어가지 않는다며 돌아선다.'},
  mage:{label:'손끝에 불씨를 모아 본다',stat:'int',dc:13,ok:()=>{S.flags.spark=true;return '손끝에 <b>푸른 불씨</b>가 피어나 감방을 비춘다! 스승에게 배운 첫 주문은 잊지 않았다.';},
   ng:()=>{C.items=C.items.map(i=>i==='마법 촉매 조각'?'금 간 촉매 조각':i);return '손끝이 찌릿했을 뿐이다. 촉매 조각에 금이 갔다.';}}
 };
 function choiceList(){const l=COMMON.map(c=>({...c}));l.push({...BLOOD_CH[C.blood],id:'blood',tag:BLOODS[C.blood]});l.push({...ORIGIN_CH[C.origin],id:'origin',tag:ORIGINS[C.origin].name});return l.filter(c=>!S.done[c.id]);}
 function addEntry(html){document.querySelectorAll('#log .entry').forEach(e=>e.classList.add('old'));const d=document.createElement('div');d.className='entry';d.innerHTML=html;$('log').appendChild(d);}
 function choose(c){S.done[c.id]=true;let h=`<div class="pick">▶ ${c.tag?`[${c.tag}] `:''}${c.label}</div>`;
-  if(c.run)h+=c.run();else{const k=check(c.stat,c.dc,SNAME[c.stat]+' 판정');const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);}
+  if(c.run)h+=c.run();else{const k=check(c.stat,c.dc,(c.stat==='luk'?'숨은 판정':c.stat.toUpperCase()+' 판정'));const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);}
   addEntry(h);renderChoices();updateBar();scrollDown();}
 function renderChoices(){const box=$('choices');box.innerHTML='';
   choiceList().forEach((c,i)=>{const b=document.createElement('button');b.className='choice'+(c.tag?' sp':'');
-    b.innerHTML=`<span class="n">${i+1}</span><span>${c.tag?`<span class="tg">[${c.tag}]</span> `:''}${c.label}</span>${c.stat?`<span class="ct">${SNAME[c.stat]} · 목표 ${c.dc}</span>`:''}`;
+    b.innerHTML=`<span class="n">${i+1}</span><span>${c.tag?`<span class="tg">[${c.tag}]</span> `:''}${c.label}</span>${c.stat&&c.stat!=='luk'?`<span class="ct">${c.stat.toUpperCase()} <svg viewBox="0 0 36 38" width="29" height="31" aria-label="목표 ${c.dc}"><path d="M18 2 L34 11 L34 27 L18 36 L2 27 L2 11 Z" fill="#272016" stroke="#bfa064"/><path d="M18 2 L8 26 L28 26 Z M2 11 L8 26 L18 36 L28 26 L34 11" fill="none" stroke="#88703e" stroke-width=".8"/><text x="18" y="23" text-anchor="middle" fill="#e8ce94" font-size="13" font-weight="bold">${c.dc}</text></svg></span>`:''}`;
     b.onclick=()=>choose(c);box.appendChild(b);});
   if(Object.keys(S.done).length){const b=document.createElement('button');b.className='choice';b.innerHTML='<span class="n">▶</span><span>다음으로</span>';b.onclick=endDemo;box.appendChild(b);}}
 function endDemo(){addEntry('<div class="sep">— 여기까지가 v'+VERSION+' 체험판입니다 —</div>다음 업데이트에서 감옥 탈출이 이어집니다.');
@@ -304,7 +312,7 @@ function statHTML(){return STATS.map(([k,n])=>`<div><span>${n}</span><b class="$
 function rowsHTML(compact=false){return [['성별',C.gender==='f'?'여성':'남성'],['혈통',BLOODS[C.blood]],['출신',ORIGINS[C.origin].name],['소지품',C.items.join(', ')||'없음'],['HP',`${C.hp} / ${C.maxhp}`]]
   .filter((r,i)=>!compact||i>=3).map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');}
 function toChar(){C=makeChar();portrait('charPortrait');$('charName').textContent=C.name;$('charMeta').textContent=(C.gender==='f'?'여성':'남성')+' · '+BLOODS[C.blood]+' · '+ORIGINS[C.origin].name;$('charRows').innerHTML=rowsHTML(true);$('charStats').innerHTML=statHTML();show('sChar');}
-function toGame(){S={done:{},flags:{},wakeStart:performance.now(),shake:0};$('log').innerHTML='';addEntry(INTRO);portrait('hudPortrait');updateBar();renderChoices();show('sGame');}
+function toGame(){S={done:{},flags:{},wakeStart:performance.now(),shake:0};$('log').innerHTML='';addEntry(INTRO+'<br><br>'+MEMORIES[C.origin]);portrait('hudPortrait');updateBar();renderChoices();show('sGame');}
 function toTitle(){closeModal();show('sTitle');const t=$('sTitle');t.classList.remove('go');void t.offsetWidth;t.classList.add('go');}
 function updateBar(){$('hpTxt').textContent=`HP ${C.hp}/${C.maxhp}`;$('hpFill').style.width=(C.hp/C.maxhp*100)+'%';
   $('stats').innerHTML=STATS.map(([k,,a])=>`<span>${k.toUpperCase()} <b class="${C.st[k]>3?'up':''}">${C.st[k]}</b></span>`).join('');}
