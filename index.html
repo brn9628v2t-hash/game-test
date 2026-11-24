@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시라 제국 (v0.4.00)</title>
+<title>시라 제국 (v0.4.11)</title>
 <link id="favicon" rel="icon">
 
 <style>
@@ -85,7 +85,8 @@ html,body,#app{background:#100e0b}#top{background:#1b1712}#bar{grid-template-col
 #sGame.blastShake{animation:blastShake .4s ease-out}
 html,body{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){#sGame.blastShake{animation:none}}
-</style>
+.hp-loss{color:#e58a80;font-weight:600;margin:12px 0;}
+#bar{grid-template-columns:62px minmax(0,1fr) 30px}#btnInv{grid-column:3;grid-row:1;padding:2px;color:#d2b77f;font-size:20px}#btnSet{grid-row:2;padding:0}#modal.inventory{align-items:flex-end;padding-bottom:max(24px,env(safe-area-inset-bottom))}#modal.inventory #mBox{width:min(94vw,420px);max-height:75dvh;overflow:auto;overscroll-behavior:contain}.invgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.invcell{min-width:0;padding:4px 1px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;overflow-wrap:anywhere}.invcell b{font-size:21px}.invlab{text-align:center;font-size:10px;color:var(--dim)}.invtabs{display:flex;gap:6px;margin:12px 0}.invtabs button{flex:1}.invtabs .active{border-color:#c9a76a;color:#e6cb91}.invdetail{margin-top:10px;padding:8px;border:1px solid #51432f}.invdetail button{margin:4px}.invhead{display:flex;justify-content:space-between;align-items:center}</style>
 </head>
 <body>
 <div id="app">
@@ -111,7 +112,7 @@ html,body{overflow-x:clip}
       <div id="bar"><canvas id="hudPortrait" class="portrait hudportrait" width="64" height="64" aria-label="캐릭터 상태"></canvas>
         <div class="hpw" id="hpBox"><div class="t" id="hpTxt"></div><div class="hpb"><i id="hpFill"></i></div></div>
         <div id="stats"></div>
-        <button id="btnSet" aria-label="설정"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6l1 3 3 1 2 4-2 3v3l-4 3-3-1-3 1-4-3v-3l-2-3 2-4 3-1z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button id="btnInv" aria-label="인벤토리" onclick="showInventory()">▣</button><button id="btnSet" aria-label="설정"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6l1 3 3 1 2 4-2 3v3l-4 3-3-1-3 1-4-3v-3l-2-3 2-4 3-1z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
       </div><div class="gamehead">시라 제국 · 이름 모를 감옥</div><div id="sceneWrap"><canvas id="cvScene" class="px" width="256" height="192"></canvas></div>
     <div id="log"><div id="choices"></div></div>
@@ -124,8 +125,8 @@ html,body{overflow-x:clip}
 <script>
 'use strict';
 /* ========== 버전 / 업데이트 내역 ========== */
-const VERSION='0.4.00';
-const UPDATES=[{v:"0.4.00",date:"2026-11-23",items:["폭발 화면 흔들림 및 피격 붉은 테두리 연출, 피해량 지문 제거"]},{v:"0.3.90",date:"2026-11-23",items:["옆 감방 죄수 대화 및 폭발 탈출 분기"]},{v:"0.3.80",date:"2026-11-23",items:["64×64 픽셀 주사위 그래픽"]},{v:"0.3.70",date:"2026-11-23",items:["감옥 첫 선택지 및 간수 대화 분기", "본문과 선택지 통합 스크롤"]},{v:"0.3.60",date:"2026-11-23",items:["흑요석 주사위 이미지 연출"]},{v:"0.3.50",date:"2026-11-23",items:["혈통·성별 초상화 6종", "감옥 분기 및 탈출", "흑갈색 금빛 D20"]},{v:"0.3.40",date:"2026-11-23",items:["자수정 D20 회전 연출", "결과 1초 유지 및 페이드"]},{v:"0.3.30",date:"2026-11-23",items:["출신별 구금 경위와 공통 도입부", "능력치 6종 HUD 및 숨은 행운", "D20 판정 아이콘", "삽화 가장자리 페이드"]},{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
+const VERSION='0.4.10';
+const UPDATES=[{v:"0.4.11",date:"2026-11-24",items:["간수 특수 전투 테스트: 크리티컬 50%"]},{v:"0.4.10",date:"2026-11-24",items:["호엠 백작가 및 감옥 구출 분기", "장비·배낭·퀘스트 탭"]},{v:"0.4.01",date:"2026-11-23",items:["실제 체력 감소량 표시"]},{v:"0.4.00",date:"2026-11-23",items:["폭발 화면 흔들림 및 피격 붉은 테두리 연출, 피해량 지문 제거"]},{v:"0.3.90",date:"2026-11-23",items:["옆 감방 죄수 대화 및 폭발 탈출 분기"]},{v:"0.3.80",date:"2026-11-23",items:["64×64 픽셀 주사위 그래픽"]},{v:"0.3.70",date:"2026-11-23",items:["감옥 첫 선택지 및 간수 대화 분기", "본문과 선택지 통합 스크롤"]},{v:"0.3.60",date:"2026-11-23",items:["흑요석 주사위 이미지 연출"]},{v:"0.3.50",date:"2026-11-23",items:["혈통·성별 초상화 6종", "감옥 분기 및 탈출", "흑갈색 금빛 D20"]},{v:"0.3.40",date:"2026-11-23",items:["자수정 D20 회전 연출", "결과 1초 유지 및 페이드"]},{v:"0.3.30",date:"2026-11-23",items:["출신별 구금 경위와 공통 도입부", "능력치 6종 HUD 및 숨은 행운", "D20 판정 아이콘", "삽화 가장자리 페이드"]},{v:"0.3.20",date:"2026-11-23",items:["캐릭터 창 간소화", "HUD 영문 약어 및 좌측 정렬", "장면과 본문 통합 스크롤", "임시 초상화 성별 구분 개선"]},{v:"0.3.10",date:"2026-11-23",items:["무작위 이름과 혈통 기반 픽셀 초상화", "모바일 HUD 및 눈뜨기 화면 개선", "외부 폰트 의존성 제거"]},
  {v:'0.3.00',date:'2026-11-23',items:[
   '시작 화면: 촛불 대신 벽에 걸린 횃불의 희미한 불빛',
   '감옥 장면을 256×192로 새로 그림: 시야를 넓혀 쇠창살과 복도까지 보이고, 횃불 빛과 철창 그림자 표현',
@@ -146,7 +147,7 @@ const STATS=[['str','근력','근'],['agi','민첩','민'],['vit','건강','건'
 const SNAME=Object.fromEntries(STATS.map(s=>[s[0],s[1]]));
 const BLOODS={empire:'제국민',north:'북방 유목민',west:'서부 이민족'};
 const ORIGINS={
- noble:{name:'귀족의 사생아',item:'문장 반지'},
+ noble:{name:'귀족의 사생아',item:''},
  squire:{name:'방랑기사의 종자',item:'구겨진 서약서'},
  troupe:{name:'유랑극단',item:'머리핀'},
  thief:{name:'도적패거리',item:'숨긴 쇠줄'},
@@ -156,11 +157,11 @@ const ORIGINS={
 let C=null,S=null;
 function makeChar(){const st={luk:3};STATS.forEach(s=>st[s[0]]=3);const pts=rnd(3,4),bonus={};
   for(let i=0;i<pts;i++){const k=pick(STATS)[0];st[k]++;bonus[k]=1;}
-  const maxhp=40+10*Math.floor((st.vit-3)/3),origin=pick(Object.keys(ORIGINS));
+  const maxhp=40+10*Math.floor((st.vit-3)/3),origin='noble';
   const gender=Math.random()<.5?'f':'m',blood=pick(Object.keys(BLOODS));
  const names={empire:{m:['알렌','루카스','에드릭','로웬'],f:['엘라','리네아','아델','미라']},north:{m:['비욘','에이릭','울프','스벤'],f:['프레야','시그리드','아스트리드','이르사']},west:{m:['카심','라힘','자이드','나딤'],f:['라일라','사라','나디아','아미라']}};
  const look={skin:pick({empire:['#d5a17e','#bb896a','#98664c'],north:['#e2b99b','#cb9d83'],west:['#b27b50','#94613e','#754b35']}[blood]),hair:pick({empire:['#39251d','#88502d','#c2a45e','#221e23'],north:['#d2b976','#c4c6c9','#a28858'],west:['#211d20','#392721']}[blood]),eye:pick(['#789da0','#776344','#899269','#51403a']),style:gender==='f'?rnd(1,2):rnd(0,3),face:rnd(0,2),feature:Math.random()<.25?rnd(1,3):0};
- return {name:pick(names[blood][gender]),gender,blood,origin,look,st,bonus,pts,hp:maxhp,maxhp,lv:1,items:[ORIGINS[origin].item]};}
+ return {name:pick(names[blood][gender]),gender,blood,origin,look,st,bonus,pts,hp:maxhp,maxhp,lv:1,items:[],equipment:[null,null,null,null,null],quest:[],gold:0};}
 
 /* ========== 빛 계산 그림 엔진 ========== */
 function hash(x,y,s){let h=(x*374761393+y*668265263+s*982451653)|0;h=(h^(h>>>13))*1274126177|0;return((h^(h>>>16))>>>0)/4294967296;}
@@ -254,12 +255,12 @@ function check(stat,dc,label){const r=rnd(1,20),v=C.st[stat],tot=r+v,ok=r===20||
   const res=r===20?'대성공!':r===1?'대실패!':ok?'성공':'실패';
   return {ok,r,res,line:`<div class="ck ${ok?'ok':'ng'}">[${label}] 주사위 <b>${r}</b> + ${stat==='luk'?'보정':stat.toUpperCase()} <b>${v}</b> = <b>${tot}</b> / 목표 ${dc} → ${res}</div>`};}
 function effect(id,cls){const el=$(id);el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
-function hurt(n){const before=C.hp;C.hp=Math.max(1,C.hp-n);if(C.hp<before){updateBar();effect('damageVignette','hit');}}
+function hurt(n){const before=C.hp;C.hp=Math.max(1,C.hp-n);const lost=before-C.hp;if(lost>0){updateBar();effect('damageVignette','hit');}return lost;}
 
 /* ========== 감옥: 첫 선택지 ========== */
 const INTRO='뺨에 닿은 돌바닥이 차갑다. 축축한 공기에는 오래된 짚과 녹슨 쇠 냄새가 뒤섞여 있다. 희미한 횃불이 일렁이는 쇠창살 너머로 길게 뻗은 복도가 보인다.<br><br><i>내가 여기에 왜……?</i><br><br>지끈거리는 머리를 부여잡고 기억을 더듬어 본다.';
 const MEMORIES={
- noble:'다른 귀족 가문의 자제와 시비가 붙었다. 처음에는 가벼운 언쟁이었지만, 가문에 대한 모욕이 오가면서 결국 몸싸움으로 번졌다. 한창 뒤엉켜 싸우던 중 누군가에게 뒤통수를 얻어맞은 것까지는 기억난다.',
+ noble:'호엠 백작과 저택에서 일하던 하녀 사이에서 태어난 나는 가문의 후계자인 이복남동생의 훈련과 경호를 맡아 왔다. 다른 귀족 자제의 비아냥거림은 익숙했지만, 여동생을 희롱하는 말만은 참을 수 없었다. 녀석의 멱살을 움켜쥐고 몸싸움을 벌이다 뒤통수를 얻어맞은 것까지 기억난다.',
  squire:'주인인 기사와 함께 어느 마을에 머물렀다. 여느 때처럼 말에게 먹이를 주고 장비를 손질하던 중, 무장한 병사들이 들이닥쳤다. 무슨 일인지 물어볼 틈도 없이 붙잡혔다.',
  troupe:'광장에서 공연을 하던 중이었다. 지방 영주를 풍자한 익살스러운 연극에 관객들은 박장대소했지만, 그중에는 웃지 않는 이들도 있었다. 공연이 끝나기도 전에 경비병들이 무대 위로 올라왔다.',
  thief:'동료들과 함께 늦은 밤 어느 상인의 저택에 숨어들었다. 제법 짭짤한 일이 될 터였다. 하지만 약속된 신호는 들려오지 않았고, 어둠 속에서 모습을 드러낸 것은 동료들이 아닌 무장한 경비병들이었다.',
@@ -270,16 +271,36 @@ const GUARD='곧 복도 끝의 문이 열리더니 철그럭거리는 소리와 
 const go=(node,text)=>{S.node=node;return text;};
 const guard=(prefix='')=>go('guard',prefix+(prefix?'<br><br>':'')+GUARD);
 const ORIGIN_CH={
- noble:{label:'가문의 이름을 대며 반지를 보여준다.',stat:'cha',dc:12,ok:'간수는 반지에 새겨진 문장을 확인하더니 잠시 망설였다.<br><br>“……잠시 기다려라. 상관에게 보고할 테니.”<br><br>간수는 걸음을 돌려 복도 끝으로 향했다.',ng:'“네가 귀족이면 나는 황제겠다.”<br><br>간수는 코웃음을 치며 쇠창살을 두드렸다.<br><br>“쓸데없는 소리 말고 조용히 해.”'},
+ noble:{label:'자신이 호엠 백작의 자식임을 밝힌다.',stat:'cha',dc:12,ok:guardRelease,ng:()=>cellBlast('“네가 호엠 백작의 자식이면 난 황제다.”<br><br>간수는 침을 뱉고 복도 너머로 떠났다.')},
  squire:{label:'자신이 모시던 기사의 행방을 묻는다.',stat:'cha',dc:11,ok:'“너와 함께 잡혀 온 기사 말이냐? 그자는 다른 곳으로 끌려갔다. 나도 그 이상은 몰라.”',ng:'“죄수 하나하나의 행방을 내가 어떻게 알아?”<br><br>간수는 귀찮다는 듯 손을 내저었다.'},
  troupe:{label:'갑자기 복통을 호소하며 고통스러운 척한다.',stat:'cha',dc:12,ok:'간수의 표정이 당황한 기색으로 바뀌었다. 그는 상태를 확인하기 위해 쇠창살 가까이 다가왔다.',ng:'“그런 수법을 한두 번 보는 줄 아냐?”<br><br>간수는 별다른 관심을 보이지 않았다.'},
  thief:{label:'간수의 허리춤에 매달린 열쇠 꾸러미를 노린다.',stat:'agi',dc:15,ok:()=>{C.items.push('작은 열쇠');S.flags.key=true;return '간수가 한눈을 파는 사이 열쇠 꾸러미에서 작은 열쇠 하나를 빼냈다.'},ng:'간수가 재빨리 몸을 뒤로 물렸다.<br><br>“어딜 손을 뻗어!”<br><br>간수가 허리춤의 곤봉을 꺼내 들었다.'},
  merchant:{label:'숨겨 둔 금화로 간수와 거래를 시도한다.',stat:'cha',dc:12,ok:'간수는 금화를 바라보다가 슬그머니 주위를 살폈다.<br><br>“……얼마나 가지고 있지?”',ng:'“뇌물을 주겠다고? 죄목을 하나 더 늘리고 싶은 모양이군.”'},
  mage:{label:'마법 사고로 인해 벌어진 오해라고 설명한다.',stat:'cha',dc:12,ok:'“마법사 양반들이 사고를 치는 게 하루 이틀 일도 아니지. 네 스승이 누군데?”<br><br>간수가 조금 누그러진 태도로 물었다.',ng:'“마법사든 뭐든 내 알 바 아니다. 얌전히 있어.”'}
 };
-const INITIAL=[{id:'call',label:'간수를 부른다.',run:()=>{const r=rnd(1,3);if(r===1)return guard();if(r===2)return '몇 번이고 간수를 불러보았지만 돌아오는 대답은 없다. 자리를 비운 모양이다.';return go('prisoner','아무리 목청껏 불러 봐도 간수는커녕 개미 한 마리도 보이지 않았다. 그때 옆 감방에서 짜증이 잔뜩 섞인 목소리가 들려왔다.<br><br>“조용히 좀 해!”<br><br>누구냐고 묻자 옆 감방의 죄수는 코웃음을 쳤다.<br><br>“네가 알아서 뭐 하게? 처형될 마당에 친구라도 만들고 싶어졌나?”');}},{id:'look',label:'주변을 둘러본다.',stat:'wis',dc:15,ok:()=>{S.flags.looseStone=true;return go('wall','감방 안을 살피던 중 벽 한쪽에서 헐거워진 돌 하나를 발견했다. 손으로 눌러 보니 미세하게 움직인다.');},ng:()=>guard('감방 안을 구석구석 살펴보았지만 아무것도 발견하지 못했다. 하는 수 없이 벽에 등을 기대고 기다렸다.')},{id:'sleep',label:'한숨 잔다.',run:()=>{S.flags.prisonerDead=true;S.flags.escaped=true;return go('blast','<i>에라, 모르겠다.</i><br><br>벽에 등을 기대고 눈을 감았다. 얼마나 지났을까.<br><br><b>콰아앙!</b><br><br>귀를 찢는 듯한 폭음과 함께 감방 한쪽 벽이 터져 나갔다. 몸이 허공에 뜨는가 싶더니 이내 차가운 돌바닥에 처박혔다.<br><br>귓속에서 날카로운 이명이 울렸다. 가까스로 몸을 일으켜 무너진 벽 너머로 발걸음을 옮겼다.<br><br>옆 감방의 죄수로 보이는 남자가 무너진 돌무더기 사이에 쓰러져 있었다. 이미 숨이 끊어진 상태였다.<br><br>남자의 시신을 뒤로하고 걸음을 옮겼다.');}}];
-const GUARD_CHOICES=[{id:'release',label:'언제 이곳에서 나갈 수 있는지 정중하게 묻는다.',run:()=> '“제가 언제쯤 이곳에서 나갈 수 있을지 알 수 있을까요?”<br><br>“내가 알 게 뭐냐? 위에서 명령이 내려올 때까지 얌전히 기다려.”'},{id:'outside',label:'간수에게 밖의 상황을 묻는다.',run:()=>{const r=rnd(1,10);if(r<=3)return '“밖이 좀 소란스럽다. 그 이상은 나도 모른다.”';if(r<=8)return '“네가 알 바 아니다.”';return go('end','그때 복도 밖에서 다급한 외침이 들려왔다. 간수가 고개를 돌렸다.');}}];
-function choiceList(){let l=[];if(S.node==='start')l=INITIAL;else if(S.node==='guard')l=[...GUARD_CHOICES,{...ORIGIN_CH[C.origin],id:'origin',tag:ORIGINS[C.origin].name}];else if(S.node==='prisoner')l=[{id:'execution',label:'처형이라니, 무슨 소리인지 묻는다.',run:()=>{newScene('죄수와의 대화');return go('prisonerTalk','“처형이라니, 무슨 소리야?”');}}];else if(S.node==='blast')l=[{id:'escape',label:'밖으로 나간다.',run:()=>{newScene('감옥 외부');return go('escaped','무너진 감방을 뒤로하고 밖으로 나섰다.');}}];return l.filter(c=>!S.done[c.id]);}
+const INITIAL=[{id:'call',label:'간수를 부른다.',run:()=>{const r=rnd(1,3);if(r===1)return guard();if(r===2)return '몇 번이고 간수를 불러보았지만 돌아오는 대답은 없다. 자리를 비운 모양이다.';return go('prisoner','아무리 목청껏 불러 봐도 간수는커녕 개미 한 마리도 보이지 않았다. 그때 옆 감방에서 짜증이 잔뜩 섞인 목소리가 들려왔다.<br><br>“조용히 좀 해!”<br><br>누구냐고 묻자 옆 감방의 죄수는 코웃음을 쳤다.<br><br>“네가 알아서 뭐 하게? 처형될 마당에 친구라도 만들고 싶어졌나?”');}},{id:'look',label:'주변을 둘러본다.',stat:'wis',dc:15,ok:()=>{S.flags.looseStone=true;return go('wall','감방 안을 살피던 중 벽 한쪽에서 헐거워진 돌 하나를 발견했다. 손으로 눌러 보니 미세하게 움직인다.');},ng:()=>guard('감방 안을 구석구석 살펴보았지만 아무것도 발견하지 못했다. 하는 수 없이 벽에 등을 기대고 기다렸다.')},{id:'sleep',label:'한숨 잔다.',run:()=>{S.flags.prisonerDead=true;S.flags.prisoner="dead";S.flags.escaped=true;return go('blast','<i>에라, 모르겠다.</i><br><br>벽에 등을 기대고 눈을 감았다. 얼마나 지났을까.<br><br><b>콰아앙!</b><br><br>귀를 찢는 듯한 폭음과 함께 감방 한쪽 벽이 터져 나갔다. 몸이 허공에 뜨는가 싶더니 이내 차가운 돌바닥에 처박혔다.<br><br>귓속에서 날카로운 이명이 울렸다. 가까스로 몸을 일으켜 무너진 벽 너머로 발걸음을 옮겼다.<br><br>옆 감방의 죄수로 보이는 남자가 무너진 돌무더기 사이에 쓰러져 있었다. 이미 숨이 끊어진 상태였다.<br><br>남자의 시신을 뒤로하고 걸음을 옮겼다.');}}];
+const GUARD_CHOICES=[{id:'fightGuard',label:'내가 누군지 알아? 당신, 큰 실수 하는 거야!',run:guardFight},{id:'release',label:'언제 이곳에서 나갈 수 있는지 정중하게 묻는다.',run:()=> '“제가 언제쯤 이곳에서 나갈 수 있을지 알 수 있을까요?”<br><br>“내가 알 게 뭐냐? 위에서 명령이 내려올 때까지 얌전히 기다려.”'},{id:'outside',label:'간수에게 밖의 상황을 묻는다.',run:()=>{const r=rnd(1,10);if(r<=3)return '“밖이 좀 소란스럽다. 그 이상은 나도 모른다.”';if(r<=8)return '“네가 알 바 아니다.”';return '그때 복도 밖에서 다급한 외침이 들려왔다. 간수가 고개를 돌렸다.';}}];
+const GUARD_CRIT_TEST=0.5;
+async function guardFight(){
+ addEntry('간수는 콧방귀를 뀌며 감방 문을 열었다. 당신을 안쪽으로 밀치고 주먹을 휘둘렀다.');
+ const win=Math.random()<GUARD_CRIT_TEST; const rounds=Math.max(1,Math.ceil((C.hp-10)/8)); const criticalRound=win?rnd(1,rounds):0; let enemy=60;
+ openModal('<h3>전투 — 감옥 간수</h3><div id="fightHP"></div><div id="fightLog" style="min-height:100px"></div>');
+ const pause=ms=>new Promise(r=>setTimeout(r,ms));
+ const status=()=>{$('fightHP').textContent=`당신 HP ${C.hp}/${C.maxhp} · 간수 HP ${enemy}/60`;};
+ const log=t=>{$('fightLog').innerHTML+=t+'<br>';}; status();
+ for(let i=1;i<=rounds;i++){await pause(550);if(i===criticalRound){enemy=10;log('<b style="color:#f5c96a">CRITICAL! 일격에 간수를 쓰러뜨렸다!</b>');status();break;}enemy=Math.max(11,enemy-Math.min(5,Math.max(2,C.st.str)));log('당신이 간수를 공격했다.');await pause(450);const lost=hurt(Math.max(0,Math.min(8,C.hp-10)));log('간수의 반격! 체력 -'+lost);status();if(C.hp<=10)break;}
+ log(win?'전투 승리':'전투 패배');await pause(1300);$('modal').classList.add('hidden');$('mBox').innerHTML='';newScene('감옥');
+ if(win){giveItem('간수의 가죽 갑옷');giveItem('간수의 칼');giveItem('감옥 열쇠');return go('guardKeyRescue','간수가 돌바닥에 쓰러졌다. 당신은 장비와 열쇠를 챙겼다.<div class="pick">획득: 간수의 가죽 갑옷, 간수의 칼, 감옥 열쇠</div>“이봐! 나도 꺼내 줘!”');}
+ return prisonerOffer('간수는 당신을 내려다보았다.<br><br>“목이 달아날 때도 똑같은 소리를 할 수 있을지 두고 보지. 얌전히 닥치고 있어.”<br><br>간수가 떠나고 옆 감방에서 목소리가 들려왔다.<br><br>“이봐, 아직 살아 있어?”');
+}
+function prisonerOffer(prefix){return go('prisonerOffer',prefix+'<br><br>“여길 탈출할 생각이거든. 너도 함께 꺼내 줄게. 물론 공짜는 아니야.”');}
+function prisonerDeal(){S.flags.prisoner='alive';S.flags.prisonerDebt=true;return go('blast','애꾸눈 사내가 조잡한 자물쇠 따개로 감방 문을 열었다.<br><br>“돈 따위는 필요 없어. 나중에 내가 다시 찾아가지.”<br><br>그는 복도 너머로 사라졌다.');}
+function prisonerReject(){const h=cellBlast('죄수는 혼자 탈출했다. “기회가 있었는데, 안타깝군.”');S.flags.prisoner='alive';return h.replace('옆 감방의 죄수는 돌무더기 아래 숨이 끊어진 상태였다.','');}
+function cellBlast(prefix){S.flags.prisoner='dead';S.flags.escaped=true;effect('sGame','blastShake');const lost=hurt(Math.floor(C.hp/2));return go('blast',prefix+'<br><br><b>콰아앙!</b><br><br>감방 벽이 터져 나갔다. 몸이 차가운 돌바닥에 처박혔다.<div class="hp-loss">체력 -'+lost+'</div>가까스로 몸을 일으켰다. 옆 감방의 죄수는 돌무더기 아래 숨이 끊어진 상태였다.');}
+function guardRelease(){const title=C.gender==='f'?'아가씨':'도련님';return go('guardWait','간수는 얼굴을 찬찬히 살폈다.<br><br>“아, 어디선가 뵀다 했더니 '+title+'셨군요. 잠시만 기다려 주십시오. 금방 꺼내 드리겠습니다.”<br><br>간수가 복도 너머로 사라졌다.');}
+function rescued(){S.flags.prisoner='rescued';return go('blast','감방 문이 열렸다. 수염이 덥수룩한 남자가 비틀거리며 걸어 나왔다. 해진 옷과 깊게 팬 눈가가 눈에 띄었다.<br><br>“고맙다!”<br><br>남자는 황급히 복도 너머로 사라졌다.');}
+function keyBlast(){S.flags.prisoner='dead';effect('sGame','blastShake');return go('blast','“잠시 기다려라. 열쇠를 찾아오겠다.”<br><br>복도로 걸음을 옮긴 순간, <b>콰아앙!</b><br><br>뒤돌아보니 죄수의 감방이 돌무더기에 깔려 있었다. 더 이상 목소리가 들리지 않았다.');}
+function choiceList(){let l=[];if(S.node==='start')l=INITIAL;else if(S.node==='guard')l=[...GUARD_CHOICES,{...ORIGIN_CH[C.origin],id:'origin',tag:ORIGINS[C.origin].name}];else if(S.node==='guardKeyRescue')l=[{id:'keyRescue',label:'마침 열쇠도 있으니 꺼내 주도록 하지.',run:rescued},{id:'keyIgnore',label:'미안하지만 지금은 나도 급해!',run:()=>{S.flags.prisoner='unknown';return go('blast','죄수를 뒤로하고 떠났다.');}}];else if(S.node==='prisonerOffer')l=[{id:'deal',label:'얼마면 되지? 여기서 나가게 해 준다면 얼마든지 줄게.',tag:'귀족의 사생아',run:prisonerDeal},{id:'doubt',label:'내가 널 어떻게 믿지?',run:()=>go('prisonerDoubt','“믿고 안 믿고는 네 자유지만, 딱히 다른 선택지는 없는데?”')},{id:'reject',label:'무시한다.',run:prisonerReject}];else if(S.node==='prisonerDoubt')l=[{id:'trust',label:'알겠어. 믿어 볼게.',run:prisonerDeal},{id:'reject',label:'무시한다.',run:prisonerReject}];else if(S.node==='guardWait')l=[{id:'waitGuard',label:'기다린다.',run:()=>{giveItem('철제 장검');giveItem('귀족의 평상복');return go('rescueAsk','잠시 후 간수가 헐레벌떡 돌아왔다. 감방 문을 열고 쇠고랑을 풀어 주었다.<br><br>“밖에 난리가 났습니다! 어서 피하십시오!”<br><br>간수는 짐을 건네고 달아났다.<div class="pick">획득: 철제 장검, 귀족의 평상복</div>“나도 꺼내 줘! 제발!”<br><br>간수는 들은 체도 하지 않았다. 죄수가 나를 향해 애처롭게 소리쳤다.');}}];else if(S.node==='rescueAsk')l=[{id:'help',label:'구해준다.',run:()=>go('rescue','감방 문과 녹슨 경첩을 살펴보았다.')},{id:'ignore',label:'무시하고 떠난다.',run:()=>{S.flags.prisoner='unknown';effect('sGame','blastShake');return go('blast','죄수를 뒤로하고 떠났다. 얼마 지나지 않아 뒤에서 거대한 폭발음이 들렸다.');}}];else if(S.node==='rescue')l=[{id:'force',label:'검을 이용해 힘으로 감방 문을 부순다.',stat:'str',dc:16,ok:rescued,ng:'검을 끼워 힘을 주었지만 문은 꿈쩍도 하지 않았다.'},{id:'hinge',label:'주변 물건을 이용해 경첩을 빼낸다.',stat:'wis',dc:13,ok:rescued,ng:'녹슨 고정핀은 좀처럼 움직이지 않았다.'},{id:'keySearch',label:'잠시 기다려라. 열쇠를 찾아오겠다.',run:keyBlast}];else if(S.node==='prisoner')l=[{id:'execution',label:'처형이라니, 무슨 소리인지 묻는다.',run:()=>{newScene('죄수와의 대화');return go('prisonerTalk','“처형이라니, 무슨 소리야?”');}}];else if(S.node==='blast')l=[{id:'escape',label:'밖으로 나간다.',run:()=>{newScene('감옥 외부');return go('escaped','감옥을 뒤로하고 밖으로 나섰다. 도시 곳곳에서 소란이 들려왔다.');}}];else if(S.node==='escaped')l=[{id:'home',label:'호엠 백작가의 저택으로 향한다.',run:()=>{newScene('호엠 백작가');return go('manor','저택은 불타고 있었다. 살아남은 하인에게 아버지와 친어머니, 정실부인이 살해당했고 두 이복동생이 납치됐다는 소식을 들었다.');}}];else if(S.node==='manor')l=[{id:'journey',label:'두 동생을 찾아 길을 나선다.',run:()=>go('journey','두 동생을 찾기로 했다. 무엇보다 여동생을 되찾아야 했다.') }];return l.filter(c=>!S.done[c.id]);}
 function newScene(title){$('log').querySelectorAll('.entry').forEach(e=>e.remove());$('sceneWrap').style.display='none';document.querySelector('.gamehead').textContent=title;window.scrollTo(0,0);}
 function addEntry(html){const d=document.createElement('div');d.className='entry';d.innerHTML=html;$('log').insertBefore(d,$('choices'));}
 let diceBusy=false;
@@ -295,7 +316,7 @@ const diceArt=["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaX
 const diceImgs=diceArt.map(src=>{const im=new Image();im.src=src;return im;});
 function drawDice(t,n,turns){const g=$('diceCanvas').getContext('2d');g.clearRect(0,0,600,510);const rem=Math.pow(1-t,1.65),bounce=t<.2?-100*(1-t/.2):-Math.abs(Math.sin((t-.2)*Math.PI*5))*45*(1-t),shift=-85*rem+Math.sin(t*9)*28*(1-t);const settled=t>=.94;const idx=settled?0:1+Math.floor((1-rem)*turns*10)%10;const im=diceImgs[idx];g.save();g.translate(300+shift,245+bounce);if(im.complete&&im.naturalWidth){g.imageSmoothingEnabled=false;const w=294,h=294;g.drawImage(im,-w/2,-h/2,w,h);}if(t===1){g.textAlign='center';g.textBaseline='middle';const digit=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];const str=String(n),px=8,x0=9-(str.length*4-1)*px/2,y0=-12-2.5*px;for(let j=0;j<str.length;j++)for(let k=0;k<15;k++)if(digit[Number(str[j])][k]==='1'){const x=x0+(j*4+k%3)*px,y=y0+Math.floor(k/3)*px;g.fillStyle='#201009';g.fillRect(x+2,y+2,px,px);g.fillStyle='#e9c58b';g.fillRect(x,y,px,px);}}g.restore();}
 function animateDice(k){return new Promise(resolve=>{const o=$('diceOverlay'),r=$('diceResult'),turns=rnd(3,5);o.style.opacity='1';o.style.display='flex';r.textContent='';drawDice(0,k.r,turns);let start=null;function frame(now){if(start===null)start=now;const t=Math.min(1,(now-start)/1050);drawDice(t,k.r,turns);if(t<1)requestAnimationFrame(frame);else{r.textContent=k.res;r.style.color=k.ok?'#b5dd96':'#ffa3a0';setTimeout(()=>{o.style.opacity='0';setTimeout(()=>{o.style.display='none';resolve();},150);},1000);}}requestAnimationFrame(frame);});}
-async function choose(c){if(diceBusy||S.done[c.id])return;diceBusy=true;$('choices').innerHTML='';try{let h=`<div class="pick">▶ ${c.tag?`[${c.tag}] `:''}${c.label}</div>`;S.done[c.id]=true;if(c.run)h+=c.run();else{const k=check(c.stat,c.dc,c.stat.toUpperCase()+' 판정');await animateDice(k);const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);if(c.id==='origin'){S.flags.originSuccess=k.ok;S.node='end';}}addEntry(h);if(c.id==='sleep'){effect('sGame','blastShake');hurt(Math.floor(C.hp/2));}renderChoices();updateBar();scrollDown();}finally{diceBusy=false;}}
+async function choose(c){if(diceBusy||S.done[c.id])return;diceBusy=true;$('choices').innerHTML='';try{let h=`<div class="pick">▶ ${c.tag?`[${c.tag}] `:''}${c.label}</div>`;S.done[c.id]=true;if(c.run)h+=await c.run();else{const k=check(c.stat,c.dc,c.stat.toUpperCase()+' 판정');await animateDice(k);const out=k.ok?c.ok:c.ng;h+=k.line+(typeof out==='function'?out():out);if(c.id==='origin'){S.flags.originSuccess=k.ok;}}if(c.id==='sleep'){effect('sGame','blastShake');const lost=hurt(Math.floor(C.hp/2));if(lost>0)h=h.replace('차가운 돌바닥에 처박혔다.<br><br>','차가운 돌바닥에 처박혔다.<div class="hp-loss">체력 -'+lost+'</div>');}addEntry(h);renderChoices();updateBar();scrollDown();}finally{diceBusy=false;}}
 function renderChoices(){const box=$('choices');box.innerHTML='';
   choiceList().forEach((c,i)=>{const b=document.createElement('button');b.className='choice'+(c.tag?' sp':'');
     b.innerHTML=`<span class="n">${i+1}</span><span>${c.tag?`<span class="tg">[${c.tag}]</span> `:''}${c.label}</span>${c.stat&&c.stat!=='luk'?`<span class="ct">${c.stat.toUpperCase()} <svg viewBox="0 0 36 38" width="29" height="31" aria-label="목표 ${c.dc}"><path d="M18 2 L34 11 L34 27 L18 36 L2 27 L2 11 Z" fill="#272016" stroke="#bfa064"/><path d="M18 2 L8 26 L28 26 Z M2 11 L8 26 L18 36 L28 26 L34 11" fill="none" stroke="#88703e" stroke-width=".8"/><text x="18" y="23" text-anchor="middle" fill="#e8ce94" font-size="13" font-weight="bold">${c.dc}</text></svg></span>`:''}`;
@@ -316,8 +337,19 @@ function toGame(){$('sceneWrap').style.display='';document.querySelector('.gameh
 function toTitle(){closeModal();show('sTitle');const t=$('sTitle');t.classList.remove('go');void t.offsetWidth;t.classList.add('go');}
 function updateBar(){$('hpTxt').textContent=`HP ${C.hp}/${C.maxhp}`;$('hpFill').style.width=(C.hp/C.maxhp*100)+'%';
   $('stats').innerHTML=STATS.map(([k,,a])=>`<span>${k.toUpperCase()} <b class="${C.st[k]>3?'up':''}">${C.st[k]}</b></span>`).join('');}
-function openModal(h){$('mBox').innerHTML=h;$('modal').classList.remove('hidden');}
-function closeModal(){$('modal').classList.add('hidden');}
+function openModal(h){$('modal').classList.remove('inventory');$('mBox').innerHTML=h;$('modal').classList.remove('hidden');}
+function closeModal(){if($('fightHP')&& !$('modal').classList.contains('hidden') && diceBusy)return;if(pendingLoot){pendingLoot=null;}$('modal').classList.add('hidden');}
+const ITEM_DB={'간수의 가죽 갑옷':{type:'armor',icon:'♜',desc:'가죽 방어구'},'간수의 칼':{type:'one',icon:'⚔',desc:'한손 무기'},'감옥 열쇠':{type:'quest',icon:'⚿',desc:'감방을 여는 열쇠'},'철제 장검':{type:'one',icon:'⚔',desc:'한손 무기'},'귀족의 평상복':{type:'armor',icon:'♜',desc:'일반 의복'}};
+function itemInfo(name){return ITEM_DB[name]||{type:'misc',icon:'◆',desc:'일반 물품'};}
+function capacity(){return 7+Math.floor(C.st.str/3);}
+function slotsFor(name){const t=itemInfo(name).type;return t==='one'||t==='shield'?[0,1]:t==='two'?[0]:t==='armor'?[2]:t==='accessory'?[3,4]:[];}
+function autoSlot(name){return slotsFor(name).find(i=>!C.equipment[i]&&(itemInfo(name).type!=='two'||!C.equipment[1]));}
+let pendingLoot=null,invTab='bag',invSel=null;
+function equipAt(name,i){C.equipment[i]=name;if(itemInfo(name).type==='two')C.equipment[1]='@locked';}
+function giveItem(name){if(itemInfo(name).type==='quest'){C.quest.push(name);return true;}const i=autoSlot(name);if(i!==undefined){equipAt(name,i);return true;}if(C.items.length<capacity()){C.items.push(name);return true;}pendingLoot=name;showInventory('bag');return false;}
+function invAction(action,i){if(action==='discard'){C.items.splice(i,1);}if(action==='replaceLoot'&&pendingLoot){C.items[i]=pendingLoot;pendingLoot=null;}if(action==='skip'){pendingLoot=null;}if(action==='unequip'&&C.items.length<capacity()){const n=C.equipment[i];if(n&&n!=='@locked'){C.items.push(n);C.equipment[i]=null;if(itemInfo(n).type==='two')C.equipment[1]=null;}}if(action==='equip'){const n=C.items[i];let k=autoSlot(n);if(k!==undefined){C.items.splice(i,1);equipAt(n,k);}else{const t=itemInfo(n).type;k=slotsFor(n).find(j=>C.equipment[j]!=='@locked');if(k!==undefined){const old=C.equipment[k];if(t==='two'&&C.equipment[1]&&C.equipment[1]!=='@locked'){if(C.items.length>=capacity())return;C.items.push(C.equipment[1]);}if(old&&itemInfo(old).type==='two')C.equipment[1]=null;C.items.splice(i,1);if(old)C.items.push(old);equipAt(n,k);}}}invSel=null;showInventory(invTab);}
+function selectInv(k,i){invSel={k,i};showInventory(invTab,true);}
+function showInventory(tab='bag',keep=false){if(!C||diceBusy&&!pendingLoot)return;invTab=tab;if(!keep)invSel=null;const cell=(n,k,i)=>`<button class="invcell" onclick="selectInv('${k}',${i})"><b>${n==='@locked'?'▣':n?itemInfo(n).icon:'·'}</b>${n==='@locked'?'사용 중':n||''}</button>`;let h='<div class="invhead"><h3>인벤토리</h3><button onclick="closeModal()">×</button></div><div class="invgrid">'+['오른손','왼손','방어구','장신구','장신구'].map((n,i)=>`<div><div class="invlab">${n}</div>${cell(C.equipment[i],'eq',i)}</div>`).join('')+'</div><div class="invtabs"><button class="'+(tab==='bag'?'active':'')+'" onclick="showInventory(&quot;bag&quot;)">배낭</button><button class="'+(tab==='quest'?'active':'')+'" onclick="showInventory(&quot;quest&quot;)">퀘스트</button></div>';if(pendingLoot)h+='<p>배낭이 가득 찼습니다. '+pendingLoot+' 획득을 위해 버릴 물품을 선택하세요.</p><button onclick="invAction(&quot;skip&quot;,0)">줍지 않는다.</button>';if(tab==='bag'){h+=`<div class="row"><span>배낭 ${C.items.length}/${capacity()}</span><span>금화 ${C.gold}</span></div><div class="invgrid">${Array.from({length:capacity()},(_,i)=>cell(C.items[i],'bag',i)).join('')}</div>`;}else{h+=C.quest.length?C.quest.map((n,i)=>cell(n,'quest',i)).join(''):'<p>퀘스트 물품이 없습니다.</p>';h+='<small>사용 및 버리기 불가</small>';}if(invSel){const {k,i}=invSel,n=(k==='eq'?C.equipment:k==='bag'?C.items:C.quest)[i];if(n&&n!=='@locked'){h+=`<div class="invdetail">${n}<br><small>${itemInfo(n).desc}</small><br>`;if(k==='bag'){if(pendingLoot)h+=`<button onclick="invAction('replaceLoot',${i})">버리고 획득</button>`;else{if(slotsFor(n).length)h+=`<button onclick="invAction('equip',${i})">착용</button>`;h+=`<button onclick="invAction('discard',${i})">버리기</button>`;}}if(k==='eq')h+=`<button ${C.items.length>=capacity()?'disabled':''} onclick="invAction('unequip',${i})">해제</button>`;h+='</div>';}}openModal(h);$('modal').classList.add('inventory');}
 function showStatus(){openModal(`<h3>상태창</h3>${rowsHTML()}<div class="sg">${statHTML()}</div><button style="width:100%;margin-top:14px" onclick="closeModal()">닫기</button>`);}
 function showUpdates(){openModal('<h3>업데이트 내역</h3>'+UPDATES.map(u=>`<div style="color:var(--gold)">v${u.v} <span style="color:var(--dim)">(${u.date})</span></div><ul>${u.items.map(i=>`<li>${i}</li>`).join('')}</ul>`).join('')+'<button style="width:100%" onclick="showSettings()">뒤로</button>');}
 function showSettings(){const fs=getComputedStyle(document.documentElement).getPropertyValue('--fs').trim();
